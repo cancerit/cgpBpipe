@@ -1,3 +1,5 @@
 /build
 /tests*
 gradle.properties
+/.gradle
+/bin/.bpipe
