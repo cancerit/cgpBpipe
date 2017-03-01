@@ -30,7 +30,7 @@ BUILDDATE=0
 # Default memory used
 # Mainly here to limit memory on systems with very large memory
 # as otherwise Java can default to extreme amounts (gigabytes)
-: ${MAX_JAVA_MEM:="512m"}
+export MAX_JAVA_MEM="512m"
 
 # Location to link .bpipedb to, ~ is a very bad idea if using multiple hosts for same user
 BPIPE_WRK=/run/shm
@@ -608,7 +608,7 @@ done
 # file that contains its own PID.
 tmsg " Launching Java"
 nohup echo 'printf $$ > .bpipe.'$LAUNCHER_PID'.run.pid &
-      exec java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx'${MAX_JAVA_MEM}'' -Xms'${MAX_JAVA_MEM}'' -noverify -classpath "'"$CP"'" '$BPIPEDEBUG' '$MODEFLAG' -Dbpipe.pid='$LAUNCHER_PID' -Dbpipe.home='"$JVM_BPIPE_HOME"' -Dbpipe.version='$VERSION' -Dbpipe.builddate='$BUILDDATE' org.codehaus.groovy.tools.GroovyStarter --classpath "'"$CP"'" --main bpipe.Runner '$TESTMODE' '$BPIPE_ARGS' > .bpipe/logs/$$.log 2>&1' \
+      exec java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx'${MAX_JAVA_MEM}' -Xms'${MAX_JAVA_MEM}' -noverify -classpath "'"$CP"'" '$BPIPEDEBUG' '$MODEFLAG' -Dbpipe.pid='$LAUNCHER_PID' -Dbpipe.home='"$JVM_BPIPE_HOME"' -Dbpipe.version='$VERSION' -Dbpipe.builddate='$BUILDDATE' org.codehaus.groovy.tools.GroovyStarter --classpath "'"$CP"'" --main bpipe.Runner '$TESTMODE' '$BPIPE_ARGS' > .bpipe/logs/$$.log 2>&1' \
      2>&1 | bash - > /dev/null 2>&1 &
 
 tmsg " Waiting for pid to be created"
