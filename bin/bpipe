@@ -32,6 +32,10 @@ BUILDDATE=0
 # as otherwise Java can default to extreme amounts (gigabytes)
 : ${MAX_JAVA_MEM:="512m"}
 
+# Location to link .bpipedb to, ~ is a very bad idea if using multiple hosts for same user
+BPIPE_WRK=/run/shm
+export BPIPE_WRK=$BPIPE_WRK
+
 # Pattern used to parse log files when tailing
 TAIL_PATTERN='s/\[[*.0-9a-zA-Z_-]*\(\.\{0,1\}[0-9]*\)\{1,\}\]'$'\t//g'
 
@@ -153,7 +157,7 @@ function clean_job_files() {
       then
          rm -f .bpipe/logs/$BPIPE_PID.log
          rm -f .bpipe/jobs/$BPIPE_PID
-         rm -f ~/.bpipedb/jobs/$BPIPE_PID
+         rm -f $BPIPE_WRK/.bpipedb/jobs/$BPIPE_PID
       fi
     fi
 
@@ -280,9 +284,9 @@ get_classpath() {
 # user's home directory under .bpipedb/jobs.
 #----------------------------------------------------------
 print_jobs() {
-    if [ -e ~/.bpipedb/jobs/ ];
+    if [ -e $BPIPE_WRK/.bpipedb/jobs/ ];
     then
-        for i in ~/.bpipedb/jobs/* _ ;
+        for i in $BPIPE_WRK/.bpipedb/jobs/* _ ;
         do
            base=`basename $i`
            if [ "$base" != "*" ] && [ "$i" != "_" ];
@@ -292,13 +296,13 @@ print_jobs() {
                  if kill -0 $base > /dev/null 2>/dev/null ;
                  then
                      # Resolve the directory where it is running
-                     JOB_DIR=`ls -l ~/.bpipedb/jobs/$base | sed 's/^.*->//g' | xargs dirname | xargs dirname | xargs dirname`
+                     JOB_DIR=`ls -l $BPIPE_WRK/.bpipedb/jobs/$base | sed 's/^.*->//g' | xargs dirname | xargs dirname | xargs dirname`
                      echo "$base : $JOB_DIR :  "`cat $i`
                  else
                     # Since the process is not running, it was
                     # probably hard killed somehow, so
                     # just clean up the file quietly
-                    rm -f ~/.bpipedb/jobs/$base
+                    rm -f $BPIPE_WRK/.bpipedb/jobs/$base
                     rm -f .bpipe/jobs/$base
                  fi
              else
@@ -646,9 +650,9 @@ echo "$0 $COMMAND $*" >> .bpipe/jobs/$BPIPE_PID
 (
     if [ ! -e .bpipedb/jobs ];
     then
-        mkdir -p ~/.bpipedb/jobs
+        mkdir -p $BPIPE_WRK/.bpipedb/jobs
     fi
-    JOBDB_FILE=~/.bpipedb/jobs/$BPIPE_PID
+    JOBDB_FILE=$BPIPE_WRK/.bpipedb/jobs/$BPIPE_PID
     if [ -e $JOBDB_FILE ];
     then
       rm $JOBDB_FILE;
