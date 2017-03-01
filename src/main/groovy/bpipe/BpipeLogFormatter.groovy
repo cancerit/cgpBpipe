@@ -35,16 +35,16 @@ import java.util.logging.LogRecord;
  * replace it with something more compact.
  */
 public class BpipeLogFormatter extends Formatter {
-    
+
     private static final String lineSep = System.getProperty("line.separator");
-    
+
     /**
      * A Custom format implementation that is designed for brevity.
      */
     public String format(LogRecord record) {
-        
-        DateFormat format = new SimpleDateFormat("h:mm:ss");
-    
+
+        DateFormat format = new SimpleDateFormat("HH:mm:ss");
+
         String loggerName = record.getLoggerName();
         if(loggerName == null) {
             loggerName = "root";
@@ -61,6 +61,5 @@ public class BpipeLogFormatter extends Formatter {
             .append(lineSep);
         return output.toString();
     }
- 
-}
 
+}
