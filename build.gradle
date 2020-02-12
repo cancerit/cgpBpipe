@@ -8,7 +8,8 @@ project.ext {
 
 repositories {
     flatDir(dirs: file('local-lib'))
-    mavenCentral()
+    maven { url "https://repo1.maven.org/maven2" }
+    //mavenCentral()
 
     // Unfortunately it seems GridGain have disabled their maven repository
     // Therefore users need to now manually download the GridGain jar file
@@ -16,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    groovy group: 'org.codehaus.groovy', name: 'groovy', version: '2.3.4'
+    compile group: 'org.codehaus.groovy', name: 'groovy', version: '2.3.4'
     compile 'org.codehaus.gpars:gpars:0.12'
 
     compile files(fileTree(dir:'local-lib', includes:['*.jar']))
@@ -56,8 +57,8 @@ if(!new File("local-lib").listFiles().find { it.name =~ /gridgain.*.jar/ }) {
 jar {
     from configurations.compile.grep {
         !(it.name in ["mail.jar"]) && !it.name.startsWith("gridgain") && !it.name.startsWith("hazelcast")
-    }.collect { 
-        it.isDirectory() ? it : zipTree(it) 
+    }.collect {
+        it.isDirectory() ? it : zipTree(it)
     }
 }
 
@@ -68,12 +69,12 @@ task stage(dependsOn: jar) << {
   ant.copy(todir: "$STAGE/bin") {
     ant.fileset(dir: 'bin', includes: "**")
   }
-  new File(STAGE+'/bin/bpipe').text = 
+  new File(STAGE+'/bin/bpipe').text =
           new File("bin/bpipe").text.replaceAll("VERSION=0.0.0","VERSION=$VERSION").replaceAll("BUILDDATE=0","BUILDDATE="+String.valueOf(System.currentTimeMillis()))
 
   ant.copy(todir: "$STAGE/lib") {
     // do not distribute mail.jar due to license
-    ant.fileset(dir: 'local-lib', includes: "*.jar", 
+    ant.fileset(dir: 'local-lib', includes: "*.jar",
         excludes: "mail.jar,gridgain-*.jar,hazelcast-*.jar,batik*.jar,commons-cli*.jar,jgraphx.jar,smack-*.jar,xml-*.jar,gpars*.jar,jsr*.jar,extra166y*.jar,groovy-all-*.jar")
     ant.fileset(dir: 'build/libs', includes: "bpipe.jar")
   }
@@ -102,5 +103,5 @@ task dist(dependsOn: stage) << {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.0'
+    gradleVersion = '4.10.2'
 }
