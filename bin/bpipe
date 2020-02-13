@@ -20,7 +20,7 @@
 
 # Version of Bpipe - this should be 0.0.0 in the source tree,
 # it will be replaced by the build script at build time
-VERSION=0.9.8.6_cgp3.0.9
+VERSION=0.9.8.6_cgp3.1.0
 
 # Build date as an integer (unix epoch time)
 # This should be 0 in the source tree,
@@ -266,9 +266,9 @@ get_classpath() {
 
   # In case we are running in place in the bpipe project root, we pre-empt any other
   # bpipe classes with those from the build directory and the eclipse compile path
-  if [ -e $BPIPE_HOME/build/classes/main ] || [ -e $BPIPE_HOME/eclipse-build ];
+  if [ -e $BPIPE_HOME/build/classes/groovy/main ] || [ -e $BPIPE_HOME/eclipse-build ];
   then
-    CP="$BPIPE_HOME/eclipse-build:$BPIPE_HOME/build/classes/main:$CP"
+    CP="$BPIPE_HOME/eclipse-build:$BPIPE_HOME/build/classes/groovy/main:$CP"
   fi
 
   # Support for Cygwin: convert the class path to windows format
@@ -363,7 +363,7 @@ display_log() {
     fi
 
     #$THREAD_EXPR .bpipe/logs/$LOG_ID.log | sed -u "$TAIL_PATTERN" |  tail $ROWS_OPT $TAIL_OPT $*
-    java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP"  $BPIPEDEBUG -Dbpipe.home="$JVM_BPIPE_HOME" bpipe.Tail $ROWS_OPT $TAIL_OPT $* $LOG_ID
+    java -XX:+UseSerialGC -XX:CICompilerCount=2 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP"  $BPIPEDEBUG -Dbpipe.home="$JVM_BPIPE_HOME" bpipe.Tail $ROWS_OPT $TAIL_OPT $* $LOG_ID
 }
 
 #----------------------------------------------------------
@@ -445,33 +445,33 @@ then
 elif [ "$COMMAND" == "cleanup" ];
 then
     shift 1
-    exec java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" $BPIPEDEBUG -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=cleanup bpipe.Runner $*
+    exec java -XX:+UseSerialGC -XX:CICompilerCount=2 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" $BPIPEDEBUG -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=cleanup bpipe.Runner $*
 elif [ "$COMMAND" == "status" ];
 then
     shift 1
-    exec java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP"  $BPIPEDEBUG -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=status bpipe.Runner $*
+    exec java -XX:+UseSerialGC -XX:CICompilerCount=2 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP"  $BPIPEDEBUG -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=status bpipe.Runner $*
 elif [ "$COMMAND" == "query" ];
 then
     shift 1
-    exec java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP"  $BPIPEDEBUG -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=query bpipe.Runner $*
+    exec java -XX:+UseSerialGC -XX:CICompilerCount=2 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP"  $BPIPEDEBUG -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=query bpipe.Runner $*
 elif [ "$COMMAND" == "preserve" ];
 then
     shift 1
-    exec java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP"  $BPIPEDEBUG -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=preserve bpipe.Runner $*
+    exec java -XX:+UseSerialGC -XX:CICompilerCount=2 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP"  $BPIPEDEBUG -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=preserve bpipe.Runner $*
 elif [ "$COMMAND" == "diagram" ];
 then
     shift 1
-    java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=diagram bpipe.Runner $*
+    java -XX:+UseSerialGC -XX:CICompilerCount=2 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=diagram bpipe.Runner $*
     exit
 #elif [ "$COMMAND" == "documentation" ];
 #then
 #    shift 1
-#    java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" -Dbpipe.mode=documentation bpipe.Runner $*
+#    java -XX:+UseSerialGC -XX:CICompilerCount=2 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" -Dbpipe.mode=documentation bpipe.Runner $*
 #    exit
 elif [ "$COMMAND" == "diagrameditor" ];
 then
     shift 1
-    java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=diagrameditor bpipe.Runner $*
+    java -XX:+UseSerialGC -XX:CICompilerCount=2 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=diagrameditor bpipe.Runner $*
     exit
 elif [ "$COMMAND" == "log" ];
 then
@@ -484,7 +484,7 @@ then
 
     # Stop any commands that must be stopped by a custom resource
     # manager (non-local commands)
-    java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=stopcommands bpipe.Runner
+    java -XX:+UseSerialGC -XX:CICompilerCount=2 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=stopcommands bpipe.Runner
 
     # Find all the process ids and kill it
     get_last_run_pid
@@ -514,12 +514,12 @@ then
     exit
 elif [ "$COMMAND" == "checks" ];
 then
-    java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=showchecks bpipe.ChecksCommand
+    java -XX:+UseSerialGC -XX:CICompilerCount=2 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=showchecks bpipe.ChecksCommand
     exit
 elif [ "$COMMAND" == "override" ];
 then
     shift 1
-    java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=showchecks bpipe.ChecksCommand -o $*
+    java -XX:+UseSerialGC -XX:CICompilerCount=2 -XX:+DisableAttachMechanism -Xmx${MAX_JAVA_MEM} -Xms${MAX_JAVA_MEM} -classpath "$CP" -Dbpipe.home="$JVM_BPIPE_HOME" -Dbpipe.mode=showchecks bpipe.ChecksCommand -o $*
     exit
 elif [ "$COMMAND" == "jobs" ];
 then
@@ -608,7 +608,7 @@ done
 # file that contains its own PID.
 tmsg " Launching Java"
 nohup echo 'printf $$ > .bpipe.'$LAUNCHER_PID'.run.pid &
-      exec java -XX:+UseSerialGC -XX:CICompilerCount=1 -XX:+DisableAttachMechanism -Xmx'${MAX_JAVA_MEM}' -Xms'${MAX_JAVA_MEM}' -noverify -classpath "'"$CP"'" '$BPIPEDEBUG' '$MODEFLAG' -Dbpipe.pid='$LAUNCHER_PID' -Dbpipe.home='"$JVM_BPIPE_HOME"' -Dbpipe.version='$VERSION' -Dbpipe.builddate='$BUILDDATE' org.codehaus.groovy.tools.GroovyStarter --classpath "'"$CP"'" --main bpipe.Runner '$TESTMODE' '$BPIPE_ARGS' > .bpipe/logs/$$.log 2>&1' \
+      exec java -XX:+UseSerialGC -XX:CICompilerCount=2 -XX:+DisableAttachMechanism -Xmx'${MAX_JAVA_MEM}' -Xms'${MAX_JAVA_MEM}' -noverify -classpath "'"$CP"'" '$BPIPEDEBUG' '$MODEFLAG' -Dbpipe.pid='$LAUNCHER_PID' -Dbpipe.home='"$JVM_BPIPE_HOME"' -Dbpipe.version='$VERSION' -Dbpipe.builddate='$BUILDDATE' org.codehaus.groovy.tools.GroovyStarter --classpath "'"$CP"'" --main bpipe.Runner '$TESTMODE' '$BPIPE_ARGS' > .bpipe/logs/$$.log 2>&1' \
      2>&1 | bash - > /dev/null 2>&1 &
 
 tmsg " Waiting for pid to be created"
